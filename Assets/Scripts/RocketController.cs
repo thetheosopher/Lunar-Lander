@@ -17,6 +17,8 @@ public class RocketController : MonoBehaviour
     public TextMeshProUGUI failureReasonText;
     public Button playAgainButton;
     public AudioSource explosionSound;
+    public Canvas introCanvas;
+    public Canvas instrumentCanvas;
 
     public float rotationSpeed = 10.0f;
     public float rocketPower = 1000.0f;
@@ -35,6 +37,7 @@ public class RocketController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        Time.timeScale = 0;
         rocketSound = GetComponent<AudioSource>();
         rigidBody = GetComponent<Rigidbody2D>();
         fuelGauge.SetMaxValue(startingFuel);
@@ -45,12 +48,20 @@ public class RocketController : MonoBehaviour
         collided = false;
     }
 
+    public void StartGame()
+    {
+        introCanvas.gameObject.SetActive(false);
+        instrumentCanvas.gameObject.SetActive(true);
+        Time.timeScale = 1;
+    }
+
     public void Reset()
     {
         rigidBody.constraints = RigidbodyConstraints2D.None;
         exploded = false;
         collided = false;
         currentFuel = startingFuel;
+        fuelGauge.SetValue(currentFuel);
         gameObject.transform.position = startingPosition;
         gameObject.transform.rotation = startingRotation;
         rigidBody.velocity = Vector2.zero;
@@ -148,11 +159,11 @@ public class RocketController : MonoBehaviour
                 Explode();
                 OnFailure("You landed too hard.");
             }
-            else if(Mathf.Abs(rigidBody.velocity.x) > 0.5f)
-            {
-                Explode();
-                OnFailure("You landed with too much horizontal velocity.");
-            }
+            //else if(Mathf.Abs(rigidBody.velocity.x) > 0.5f)
+            //{
+            //    Explode();
+            //    OnFailure("You landed with too much horizontal velocity.");
+            //}
             else if(Mathf.Abs(attitude) > 3f)
             {
                 Explode();

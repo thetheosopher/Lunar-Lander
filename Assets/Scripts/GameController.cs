@@ -82,8 +82,22 @@ public class GameController : MonoBehaviour
         landingVelocityText.SetText($"{stats.velocity:0.##} m/Sec");
         landingAttitudeText.SetText($"{stats.attitude:0.##}­°");
         landingFuelRemainingText.SetText($"{stats.fuelRemaining * 100.0f:0.#}%");
-        landingPadPositionText.SetText($"{stats.padPosition}");
+        landingPadPositionText.SetText($"{stats.padPosition:0.##}");
         landingPadMultiplierText.SetText($"{stats.padMultiplier}x");
+        landingScoreText.SetText($"Landing Score: {ComputeScore(stats):0}");
+    }
+
+    private float ComputeScore(LandingStats stats)
+    {
+        float baseScore = 1000f;
+        float velocityBonus = 1000 - Mathf.Abs(stats.velocity) * 1000.0f;
+        float attitudeBonus = 1000 - Mathf.Abs(stats.attitude) * 1000.0f;
+        float fuelBonus = 1000 - stats.fuelRemaining * 1000.0f;
+        float padPositionBonus = 1000 - Mathf.Abs(stats.padPosition) * 1000f;
+        float score = baseScore + velocityBonus + attitudeBonus + fuelBonus + padPositionBonus;
+        score *= stats.padMultiplier;
+
+        return score;
     }
 
     public void OnSuccess()

@@ -149,8 +149,8 @@ public class RocketController : MonoBehaviour
         }
         else if(collision.gameObject.CompareTag("Landing Pad"))
         {
-            float attitude = getAttitude();
-            landingAttitude = getAttitude();
+            //float attitude = getAttitude();
+            //landingAttitude = getAttitude();
             landingVelocity = collision.GetContact(0).relativeVelocity.magnitude;
             landingFuelRemaining = currentFuel / startingFuel;
 
@@ -162,7 +162,7 @@ public class RocketController : MonoBehaviour
                 Explode();
                 OnFailure("You landed too hard");
             }
-            else if(Mathf.Abs(attitude) > 3f)
+            else if(Mathf.Abs(landingAttitude) > 3f)
             {
                 Explode();
                 OnFailure("You landed at a tilt");

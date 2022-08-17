@@ -1,0 +1,18 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5e581736b745c644abcd64b20da1a0aa, type: 3}
+  m_Name: Level1Rocket
+  m_EditorClassIdentifier: 
+  rotationSpeed: 10
+  rocketPower: 200000
+  startingFuel: 1000
+  fuelRate: 50

@@ -12,10 +12,12 @@ public class RocketController : MonoBehaviour
 
     public GameController gameController;
 
-    public float rotationSpeed = 10.0f;
-    public float rocketPower = 1000.0f;
-    public float startingFuel = 1000.0f;
-    public float fuelRate = 100.0f;
+    public RocketParameters rocketParameters;
+
+    //public float rotationSpeed = 10.0f;
+    //public float rocketPower = 1000.0f;
+    //public float startingFuel = 1000.0f;
+    //public float fuelRate = 100.0f;
     
     private float currentFuel;
     private bool rocketOn = false;
@@ -40,11 +42,11 @@ public class RocketController : MonoBehaviour
         Time.timeScale = 0;
         rocketSound = GetComponent<AudioSource>();
         rigidBody = GetComponent<Rigidbody2D>();
-        gameController.fuelGauge.SetMaxValue(startingFuel);
-        gameController.UpdateFuelGauge(startingFuel);
+        gameController.fuelGauge.SetMaxValue(rocketParameters.startingFuel);
+        gameController.UpdateFuelGauge(rocketParameters.startingFuel);
         startingPosition = gameObject.transform.position;
         startingRotation = gameObject.transform.rotation;
-        currentFuel = startingFuel;
+        currentFuel = rocketParameters.startingFuel;
         exploded = false;
         collided = false;
     }
@@ -54,7 +56,7 @@ public class RocketController : MonoBehaviour
         rigidBody.constraints = RigidbodyConstraints2D.None;
         exploded = false;
         collided = false;
-        currentFuel = startingFuel;
+        currentFuel = rocketParameters.startingFuel;
         gameController.UpdateFuelGauge(currentFuel);
         gameObject.transform.position = startingPosition;
         gameObject.transform.rotation = startingRotation;
@@ -72,7 +74,7 @@ public class RocketController : MonoBehaviour
         if(!collided)
         {
             float horizontalInput = Input.GetAxis("Horizontal");
-            gameObject.transform.Rotate(Vector3.forward, rotationSpeed * Time.deltaTime * horizontalInput);
+            gameObject.transform.Rotate(Vector3.forward, rocketParameters.rotationSpeed * Time.deltaTime * horizontalInput);
         }
 
         if (Input.GetKey(KeyCode.Space) && currentFuel > 0 && !collided)
@@ -100,8 +102,8 @@ public class RocketController : MonoBehaviour
         // Add force if rocket is on
         if (rocketOn)
         {
-            rigidBody.AddRelativeForce(Vector2.up * Time.deltaTime * rocketPower, ForceMode2D.Force);
-            currentFuel -= fuelRate * Time.deltaTime;
+            rigidBody.AddRelativeForce(Vector2.up * Time.deltaTime * rocketParameters.rocketPower, ForceMode2D.Force);
+            currentFuel -= rocketParameters.fuelRate * Time.deltaTime;
             if (currentFuel < 0 || collided)
             {
                 currentFuel = 0;
@@ -115,7 +117,7 @@ public class RocketController : MonoBehaviour
             landingAttitude = getAttitude();
             landingVelocityY = rigidBody.velocity.y;
             landingVelocityX = rigidBody.velocity.x;
-            landingFuelRemaining = currentFuel / startingFuel;
+            landingFuelRemaining = currentFuel / rocketParameters.startingFuel;
             gameController.UpdateFlightStats(landingVelocityY, landingVelocityX, landingAttitude, currentFuel);
         }
     }
@@ -152,7 +154,7 @@ public class RocketController : MonoBehaviour
             //float attitude = getAttitude();
             //landingAttitude = getAttitude();
             landingVelocity = collision.GetContact(0).relativeVelocity.magnitude;
-            landingFuelRemaining = currentFuel / startingFuel;
+            landingFuelRemaining = currentFuel / rocketParameters.startingFuel;
 
             LandingPadData lpd = collision.gameObject.GetComponent<LandingPadData>();
             landingPadMultiplier = lpd.padMultiplier;

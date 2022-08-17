@@ -8,17 +8,9 @@ public class RocketController : MonoBehaviour
 {
     public ParticleSystem rocketFlame;
     public ParticleSystem explosion;
-    public TextMeshProUGUI verticalVelocityText;
-    public TextMeshProUGUI horizontalVelocityText;
-    public TextMeshProUGUI attitudeText;
-    public GaugeScript fuelGauge;
-    public TextMeshProUGUI successText;
-    public TextMeshProUGUI failureText;
-    public TextMeshProUGUI failureReasonText;
-    public Button playAgainButton;
     public AudioSource explosionSound;
-    public Canvas introCanvas;
-    public Canvas instrumentCanvas;
+
+    public GameController gameController;
 
     public float rotationSpeed = 10.0f;
     public float rocketPower = 1000.0f;
@@ -34,25 +26,27 @@ public class RocketController : MonoBehaviour
     private Vector3 startingPosition;
     private Quaternion startingRotation;
 
+    private float landingVelocity;
+    private float landingVelocityX;
+    private float landingVelocityY;
+    private float landingAttitude;
+    private float landingFuelRemaining;
+    private float landingPadPosition;
+    private float landingPadMultiplier;
+
     // Start is called before the first frame update
     void Start()
     {
         Time.timeScale = 0;
         rocketSound = GetComponent<AudioSource>();
         rigidBody = GetComponent<Rigidbody2D>();
-        fuelGauge.SetMaxValue(startingFuel);
+        gameController.fuelGauge.SetMaxValue(startingFuel);
+        gameController.UpdateFuelGauge(startingFuel);
         startingPosition = gameObject.transform.position;
         startingRotation = gameObject.transform.rotation;
         currentFuel = startingFuel;
         exploded = false;
         collided = false;
-    }
-
-    public void StartGame()
-    {
-        introCanvas.gameObject.SetActive(false);
-        instrumentCanvas.gameObject.SetActive(true);
-        Time.timeScale = 1;
     }
 
     public void Reset()
@@ -61,17 +55,14 @@ public class RocketController : MonoBehaviour
         exploded = false;
         collided = false;
         currentFuel = startingFuel;
-        fuelGauge.SetValue(currentFuel);
+        gameController.UpdateFuelGauge(currentFuel);
         gameObject.transform.position = startingPosition;
         gameObject.transform.rotation = startingRotation;
         rigidBody.velocity = Vector2.zero;
         rocketOn = false;
         rocketFlame.Stop();
         rocketSound.Stop();
-        failureText.gameObject.SetActive(false);
-        failureReasonText.gameObject.SetActive(false);
-        successText.gameObject.SetActive(false);
-        playAgainButton.gameObject.SetActive(false);
+        gameController.HideLandingInfoUI();
         gameObject.SetActive(true);
     }
 
@@ -102,25 +93,31 @@ public class RocketController : MonoBehaviour
                 rocketSound.Stop();
             }
         }
+    }
 
+    public void FixedUpdate()
+    {
         // Add force if rocket is on
-        if(rocketOn)
+        if (rocketOn)
         {
             rigidBody.AddRelativeForce(Vector2.up * Time.deltaTime * rocketPower, ForceMode2D.Force);
             currentFuel -= fuelRate * Time.deltaTime;
-            if(currentFuel < 0 || collided)
+            if (currentFuel < 0 || collided)
             {
                 currentFuel = 0;
                 rocketFlame.Stop();
                 rocketSound.Stop();
                 rocketOn = false;
             }
-            fuelGauge.SetValue(currentFuel);
         }
-
-        verticalVelocityText.SetText($"{ rigidBody.velocity.y:0.##} m/Sec");
-        horizontalVelocityText.SetText($"{ rigidBody.velocity.x:0.##} m/Sec");
-        attitudeText.SetText($"{getAttitude():0.##}­°");
+        if (!collided)
+        {
+            landingAttitude = getAttitude();
+            landingVelocityY = rigidBody.velocity.y;
+            landingVelocityX = rigidBody.velocity.x;
+            landingFuelRemaining = currentFuel / startingFuel;
+            gameController.UpdateFlightStats(landingVelocityY, landingVelocityX, landingAttitude, currentFuel);
+        }
     }
 
     public float getAttitude()
@@ -143,34 +140,41 @@ public class RocketController : MonoBehaviour
         if(collision.gameObject.CompareTag("Ground"))
         {
             Explode();
-            OnFailure("You missed the landing pad");
+            OnFailure("You crashed");
         }
         else if(collision.gameObject.CompareTag("Boundary"))
         {
             gameObject.SetActive(false);
-            OnFailure("You went too far off course.");
+            OnFailure("You went off course");
         }
         else if(collision.gameObject.CompareTag("Landing Pad"))
         {
             float attitude = getAttitude();
-            Debug.Log("Collision Velocity:" + collision.GetContact(0).relativeVelocity.magnitude);
-            if (collision.GetContact(0).relativeVelocity.magnitude > 0.66f)
+            landingAttitude = getAttitude();
+            landingVelocity = collision.GetContact(0).relativeVelocity.magnitude;
+            landingFuelRemaining = currentFuel / startingFuel;
+
+            LandingPadData lpd = collision.gameObject.GetComponent<LandingPadData>();
+            landingPadMultiplier = lpd.padMultiplier;
+
+            if (landingVelocity > 0.66f)
             {
                 Explode();
-                OnFailure("You landed too hard.");
+                OnFailure("You landed too hard");
             }
-            //else if(Mathf.Abs(rigidBody.velocity.x) > 0.5f)
-            //{
-            //    Explode();
-            //    OnFailure("You landed with too much horizontal velocity.");
-            //}
             else if(Mathf.Abs(attitude) > 3f)
             {
                 Explode();
-                OnFailure("You landed with too much tilt");
+                OnFailure("You landed at a tilt");
             }
             else
             {
+                var point = collision.GetContact(0);
+                var go = collision.gameObject.transform.position;
+
+                var delta = point.point.x - go.x;
+                landingPadPosition = delta;
+
                 rigidBody.velocity = Vector2.zero;
                 gameObject.transform.rotation = Quaternion.identity;
                 OnSuccess();
@@ -195,15 +199,19 @@ public class RocketController : MonoBehaviour
         rocketFlame.Stop();
         rocketFlame.Clear();
         rigidBody.constraints = RigidbodyConstraints2D.FreezeAll;
-        successText.gameObject.SetActive(true);
-        playAgainButton.gameObject.SetActive(true);
+        gameController.UpdateLandingStats(new LandingStats
+        {
+            velocity = landingVelocity,
+            attitude = landingAttitude,
+            fuelRemaining = landingFuelRemaining,
+            padPosition = landingPadPosition,
+            padMultiplier = landingPadMultiplier
+        });
+        gameController.OnSuccess();
     }
 
     private void OnFailure(string reason)
     {
-        failureText.gameObject.SetActive(true);
-        failureReasonText.gameObject.SetActive(true);
-        failureReasonText.text = reason;
-        playAgainButton.gameObject.SetActive(true);
+        gameController.OnFailure(reason);
     }
 }

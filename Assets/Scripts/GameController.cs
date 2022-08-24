@@ -35,16 +35,11 @@ public class GameController : MonoBehaviour
     public TextMeshProUGUI landingPadPositionText;
     public TextMeshProUGUI landingPadMultiplierText;
 
-    public RocketController rocket;
+    public LevelLoader levelLoader;
 
-    void Start()
+    private void Start()
     {
-        
-    }
-
-    void Update()
-    {
-        
+        levelLoader.LoadLevel(1);
     }
 
     public void UpdateFuelGauge(float value)
@@ -56,6 +51,7 @@ public class GameController : MonoBehaviour
     {
         introCanvas.gameObject.SetActive(false);
         instrumentCanvas.gameObject.SetActive(true);
+        levelLoader.LoadLevel(1);
         Time.timeScale = 1;
     }
 

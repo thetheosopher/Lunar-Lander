@@ -9,6 +9,9 @@ public class RocketController : MonoBehaviour
     public ParticleSystem rocketFlame;
     public ParticleSystem explosion;
     public AudioSource explosionSound;
+    public AudioSource successSound;
+    public AudioSource failureSound;
+    public GameObject altimeter;
 
     public GameController gameController;
 
@@ -25,6 +28,7 @@ public class RocketController : MonoBehaviour
     private Rigidbody2D rigidBody;
     private Vector3 startingPosition;
     private Quaternion startingRotation;
+    private float altitude;
 
     private float landingVelocity;
     private float landingVelocityX;
@@ -110,13 +114,27 @@ public class RocketController : MonoBehaviour
                 rocketOn = false;
             }
         }
+
+        // Calculate altitude
+        RaycastHit2D hit = Physics2D.Raycast(altimeter.transform.position, Vector2.down);
+
+        //Vector3 down = altimeter.transform.TransformDirection(Vector3.down) * 10;
+        //Debug.DrawRay(altimeter.transform.position, down, Color.green, 5, false);
+
+        // If it hits something...
+        if (hit.collider != null)
+        {
+            altitude = Mathf.Abs(hit.point.y - altimeter.transform.position.y);
+        }
+
         if (!collided)
         {
             landingAttitude = getAttitude();
-            landingVelocityY = rigidBody.velocity.y;
-            landingVelocityX = rigidBody.velocity.x;
+            landingVelocityY = rigidBody.velocity.y * gameController.distanceScalingFactor;
+            landingVelocityX = rigidBody.velocity.x * gameController.distanceScalingFactor;
             landingFuelRemaining = currentFuel / startingFuel;
-            gameController.UpdateFlightStats(landingVelocityY, landingVelocityX, landingAttitude, currentFuel);
+            gameController.UpdateFlightStats(landingVelocityY, landingVelocityX, 
+                landingAttitude, currentFuel, altitude * 100.0f);
         }
     }
 
@@ -199,17 +217,19 @@ public class RocketController : MonoBehaviour
         rigidBody.constraints = RigidbodyConstraints2D.FreezeAll;
         gameController.UpdateLandingStats(new LandingStats
         {
-            velocity = landingVelocity,
+            velocity = landingVelocity * gameController.distanceScalingFactor,
             attitude = landingAttitude,
             fuelRemaining = landingFuelRemaining,
             padPosition = landingPadPosition,
             padMultiplier = landingPadMultiplier
         });
+        successSound.Play();
         gameController.OnSuccess();
     }
 
     private void OnFailure(string reason)
     {
+        failureSound.Play();
         gameController.OnFailure(reason);
     }
 }

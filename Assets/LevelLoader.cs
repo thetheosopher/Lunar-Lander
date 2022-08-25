@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.U2D;
@@ -8,11 +6,6 @@ public class LevelLoader : MonoBehaviour
 {
     public GameObject landingPadPrefab;
     public GameObject padMultiplierLabelPrefab;
-
-    // Start is called before the first frame update
-    void Start()
-    {
-    }
 
     public void LoadLevel(int levelNumber)
     {
@@ -103,11 +96,5 @@ public class LevelLoader : MonoBehaviour
             tmp.text = padMultiplierLabel.text;
             rt.position = new Vector3(padMultiplierLabel.x, padMultiplierLabel.y);
         }
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
     }
 }

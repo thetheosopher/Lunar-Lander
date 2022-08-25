@@ -28,6 +28,7 @@ public class GameController : MonoBehaviour
     public TextMeshProUGUI failureText;
     public TextMeshProUGUI failureReasonText;
     public Button playAgainButton;
+    public Button continueButton;
     public Canvas introCanvas;
     public Canvas instrumentCanvas;
     public Image landingStatsPanel;
@@ -43,6 +44,8 @@ public class GameController : MonoBehaviour
 
     public LevelLoader levelLoader;
     public int startingLevel = 0;
+    public int currentLevel = 0;
+    public int maxLevel = 2;
     public int lastScore = 0;
     public int totalScore = 0;
 
@@ -64,6 +67,7 @@ public class GameController : MonoBehaviour
         if(startingLevel != 0)
         {
             levelLoader.LoadLevel(startingLevel);
+            currentLevel = startingLevel;
         }
     }
 
@@ -97,6 +101,14 @@ public class GameController : MonoBehaviour
         introCanvas.gameObject.SetActive(false);
         instrumentCanvas.gameObject.SetActive(true);
         Time.timeScale = 1;
+    }
+
+    public void LoadNextLevel()
+    {
+        currentLevel++;
+        levelLoader.LoadLevel(currentLevel);
+        RocketController rc = rocket.GetComponent<RocketController>();
+        rc.Reset();
     }
 
     public void ActivateMainCamera()
@@ -173,6 +185,7 @@ public class GameController : MonoBehaviour
         failureReasonText.gameObject.SetActive(false);
         successText.gameObject.SetActive(false);
         playAgainButton.gameObject.SetActive(false);
+        continueButton.gameObject.SetActive(false);
         landingScoreText.gameObject.SetActive(false);
         landingStatsPanel.gameObject.SetActive(false);
     }
@@ -227,7 +240,7 @@ public class GameController : MonoBehaviour
         landingStatsPanel.gameObject.SetActive(true);
         totalScore += lastScore;
         totalScoreText.text = $"{totalScore:#,###}";
-        StartCoroutine(PlayAgainCoroutine());
+        StartCoroutine(PlayAgainCoroutine(true));
     }
 
     public void OnFailure(string reason)
@@ -235,13 +248,23 @@ public class GameController : MonoBehaviour
         failureText.gameObject.SetActive(true);
         failureReasonText.gameObject.SetActive(true);
         failureReasonText.text = reason;
-        StartCoroutine(PlayAgainCoroutine());
+        StartCoroutine(PlayAgainCoroutine(false));
     }
 
-    IEnumerator PlayAgainCoroutine()
+    IEnumerator PlayAgainCoroutine(bool success)
     {
         yield return new WaitForSeconds(3);
         ActivateMainCamera();
-        playAgainButton.gameObject.SetActive(true);
+        if (success)
+        {
+            if(currentLevel < maxLevel)
+            {
+                continueButton.gameObject.SetActive(true);
+            }
+        }
+        else
+        {
+            playAgainButton.gameObject.SetActive(true);
+        }
     }
 }

@@ -33,6 +33,10 @@ public class LevelLoader : MonoBehaviour
         ConfigureGround(level.groundPoints);
         CreateLandingPads(level.landingPads);
         CreatePadMultiplierLabels(level.padMultiplierLabels);
+
+        GameObject gameController = GameObject.Find("GameController");
+        GameController controller = gameController.GetComponent<GameController>();
+        controller.ActivateMainCamera();
     }
 
     void SetLevelName(string name)
@@ -80,6 +84,8 @@ public class LevelLoader : MonoBehaviour
         rocketController.rocketPower = level.rocketPower;
         rocketController.startingFuel = level.rocketStartingFuel;
         rocketController.fuelRate = level.rocketFuelRate;
+        rocketController.startingRotation = level.rocketRotation;
+        rocket.transform.rotation = level.rocketRotation;
         Rigidbody2D rigidbody2D = rocket.GetComponent<Rigidbody2D>();
         rigidbody2D.mass = level.rocketMass;
         rigidbody2D.gravityScale = level.rocketGravityScale;
@@ -114,7 +120,7 @@ public class LevelLoader : MonoBehaviour
             padData.padMultiplier = pad.padMultiplier;
 
             BoxCollider2D collider = padObject.GetComponent<BoxCollider2D>();
-            collider.size = new Vector2(pad.colliderSizeX, 0.1f);
+            collider.size = new Vector2(pad.colliderSizeX, 1.0f);
         }
     }
 

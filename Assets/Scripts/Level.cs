@@ -18,6 +18,7 @@ public class Level
     public float rocketFuelRate;
     public float rocketMass;
     public float rocketGravityScale;
+    public SerializableQuaternion rocketRotation;
 
     public LandingPad[] landingPads;
     public GroundPoint[] groundPoints;

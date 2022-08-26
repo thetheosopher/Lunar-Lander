@@ -1,50 +1,60 @@
 {
-	"name": "Level 2",
-	"instructions": "Steer your rocket to the center of the pad",
-	"baseScore": 250.0,
-	"rocketPositionX": -5.070000171661377,
-	"rocketPositionY": 3.9998037815093996,
-	"rocketRotationSpeed": 50.0,
-	"rocketPower": 200000.0,
-	"rocketStartingFuel": 2000.0,
-	"rocketFuelRate": 50.0,
-	"rocketMass": 5000.0,
-	"rocketGravityScale": 0.05000000074505806,
-	"landingPads": [
-		{
-			"name": "Landing Pad 1",
-			"padMultiplier": 1.0,
-			"positionX": 0.0,
-			"positionY": -1.9800000190734864,
-			"scaleX": 6.070000171661377,
-			"scaleY": 0.10000000149011612,
-			"colliderSizeX": 0.8999999761581421
-		}
-	],
-	"groundPoints": [
-		{
-			"x": -3.015451431274414,
-			"y": -1.9961669445037842
-		},
-		{
-			"x": 2.9981606006622316,
-			"y": -1.9828786849975587
-		},
-		{
-			"x": 8.908055305480957,
-			"y": -5.11553955078125
-		},
-		{
-			"x": -8.928577423095704,
-			"y": -5.094622611999512
-		}
-	],
-	"padMultiplierLabels": [
-		{
-			"name": "Pad Multiplier 1",
-			"text": "1x",
-			"x": 0.0,
-			"y": -2.3299999237060549
-		}
-	]
+  "name": "Level 2",
+  "instructions": "Steer your rocket to the center of the pad",
+  "baseScore": 250.0,
+  "rocketPositionX": -4.210000038146973,
+  "rocketPositionY": 3.319999933242798,
+  "rocketRotationSpeed": 75.0,
+  "rocketPower": 200000.0,
+  "rocketStartingFuel": 1500.0,
+  "rocketFuelRate": 50.0,
+  "rocketMass": 5000.0,
+  "rocketGravityScale": 0.05000000074505806,
+  "rocketRotation": {
+    "x": 0.0,
+    "y": 0.0,
+    "z": 0.0,
+    "w": 1.0
+  },
+  "landingPads": [
+    {
+      "name": "Landing Pad 1",
+      "padMultiplier": 1.0,
+      "positionX": 5.445000171661377,
+      "positionY": -1.9429999589920045,
+      "scaleX": 5.010000228881836,
+      "scaleY": 0.10000000149011612,
+      "colliderSizeX": 0.9134521484375
+    }
+  ],
+  "groundPoints": [
+    {
+      "x": 2.933145523071289,
+      "y": -1.925907850265503
+    },
+    {
+      "x": 7.963130950927734,
+      "y": -1.9594590663909913
+    },
+    {
+      "x": 8.908055305480957,
+      "y": -5.11553955078125
+    },
+    {
+      "x": -8.928577423095704,
+      "y": -5.094622611999512
+    },
+    {
+      "x": 1.9106765985488892,
+      "y": -4.497692108154297
+    }
+  ],
+  "padMultiplierLabels": [
+    {
+      "name": "Pad Multiplier 1",
+      "text": "1x",
+      "x": 5.480000019073486,
+      "y": -2.3299999237060549
+    }
+  ]
 }

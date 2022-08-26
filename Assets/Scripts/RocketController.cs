@@ -27,7 +27,7 @@ public class RocketController : MonoBehaviour
     private AudioSource rocketSound;
     private Rigidbody2D rigidBody;
     public Vector3 startingPosition;
-    private Quaternion startingRotation;
+    public Quaternion startingRotation;
     private float altitude;
 
     private float landingVelocity;
@@ -47,7 +47,7 @@ public class RocketController : MonoBehaviour
         gameController.fuelGauge.SetMaxValue(startingFuel);
         gameController.UpdateFuelGauge(startingFuel);
         startingPosition = gameObject.transform.position;
-        startingRotation = gameObject.transform.rotation;
+        // startingRotation = gameObject.transform.rotation;
         currentFuel = startingFuel;
         exploded = false;
         collided = false;
@@ -59,6 +59,7 @@ public class RocketController : MonoBehaviour
         exploded = false;
         collided = false;
         currentFuel = startingFuel;
+        gameController.fuelGauge.SetMaxValue(startingFuel);
         gameController.UpdateFuelGauge(currentFuel);
         gameObject.transform.position = startingPosition;
         gameObject.transform.rotation = startingRotation;
@@ -159,7 +160,14 @@ public class RocketController : MonoBehaviour
         if(collision.gameObject.CompareTag("Ground"))
         {
             Explode();
-            OnFailure("You crashed");
+            if(currentFuel <= 0)
+            {
+                OnFailure("You ran out of fuel and crash.");
+            }
+            else
+            {
+                OnFailure("You crashed.");
+            }
         }
         else if(collision.gameObject.CompareTag("Boundary"))
         {
@@ -177,12 +185,26 @@ public class RocketController : MonoBehaviour
             if (landingVelocity > 0.66f)
             {
                 Explode();
-                OnFailure("You landed too hard");
+                if(currentFuel <= 0)
+                {
+                    OnFailure("You ran out of fuel and landed too hard.");
+                }
+                else
+                {
+                    OnFailure("You landed too hard");
+                }
             }
             else if(Mathf.Abs(landingAttitude) > 3f)
             {
                 Explode();
-                OnFailure("You landed at a tilt");
+                if(currentFuel <= 0)
+                {
+                    OnFailure("You ran out of fuel and landed at a bad angle.");
+                }
+                else
+                {
+                    OnFailure("You landed at a bad angle.");
+                }
             }
             else
             {

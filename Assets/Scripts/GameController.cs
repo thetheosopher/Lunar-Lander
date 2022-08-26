@@ -40,7 +40,7 @@ public class GameController : MonoBehaviour
     public GameObject rocket;
     public Camera mainCamera;
     public Camera closeUpCamera;
-    public float distanceScalingFactor = 10.0f;
+    public float distanceScalingFactor = 2.0f;
 
     public LevelLoader levelLoader;
     public int startingLevel = 0;
@@ -93,7 +93,11 @@ public class GameController : MonoBehaviour
         ActivateMainCamera();
         introCanvas.gameObject.SetActive(false);
         instrumentCanvas.gameObject.SetActive(true);
-        levelLoader.LoadLevel(1);
+        levelLoader.LoadLevel(startingLevel);
+        totalScore = 0;
+        totalScoreText.text = "0";
+        RocketController rc = rocket.GetComponent<RocketController>();
+        rc.Reset();
         Time.timeScale = 1;
     }
 

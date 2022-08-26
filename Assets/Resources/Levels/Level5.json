@@ -1,11 +1,11 @@
 {
-  "name": "Level 3",
-  "instructions": "Land on higher value pads for extra points",
-  "baseScore": 1000.0,
+  "name": "Level 5",
+  "instructions": "Correct rocket attitude and land safely",
+  "baseScore": 3000.0,
   "rocketPositionX": -1.25,
   "rocketPositionY": 3.4700000286102297,
-  "rocketRotationSpeed": 75.0,
-  "rocketPower": 200000.0,
+  "rocketRotationSpeed": 500.0,
+  "rocketPower": 250000.0,
   "rocketStartingFuel": 2000.0,
   "rocketFuelRate": 50.0,
   "rocketMass": 5000.0,
@@ -13,8 +13,8 @@
   "rocketRotation": {
     "x": 0.0,
     "y": 0.0,
-    "z": 0.0,
-    "w": 1.0
+    "z": 0.7079964280128479,
+    "w": 0.7062160968780518
   },
   "landingPads": [
     {
@@ -42,7 +42,7 @@
       "positionY": -3.0602219104766847,
       "scaleX": 0.9527999758720398,
       "scaleY": 0.10000000149011612,
-      "colliderSizeX": 1.0
+      "colliderSizeX": 0.8100000023841858
     }
   ],
   "groundPoints": [

@@ -56,6 +56,7 @@ public class MenuItems
         level.rocketPower = rocketController.rocketPower;
         level.rocketStartingFuel = rocketController.startingFuel;
         level.rocketFuelRate = rocketController.fuelRate;
+        level.rocketRotation = rocket.transform.rotation;
         Rigidbody2D rigidbody2D = rocket.GetComponent<Rigidbody2D>();
         level.rocketMass = rigidbody2D.mass;
         level.rocketGravityScale = rigidbody2D.gravityScale;

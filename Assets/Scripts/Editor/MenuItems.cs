@@ -1,31 +1,51 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.IO;
 using UnityEngine;
+using UnityEditor;
+using System.IO;
 using UnityEngine.U2D;
 using TMPro;
 
-public class LevelInfo : MonoBehaviour
+public class MenuItems
 {
-    // Start is called before the first frame update
-    void Start()
+    [MenuItem("Tools/Load Level...")]
+    private static void LoadLevel()
     {
-        // Export landing pad data
-        // ExportLandingPads();
+        string path = EditorUtility.OpenFilePanel("Load Level File", "", "json");
+        if (path.Length != 0)
+        {
+            string levelData = File.ReadAllText(path);
+            GameObject levelLoader = GameObject.Find("LevelLoader");
+            LevelLoader loader = levelLoader.GetComponent<LevelLoader>();
+            loader.LoadLevelData(levelData);
+        }
     }
 
-    public void SaveData()
+    [MenuItem("Tools/Save Level...")]
+    private static void SaveLevel()
     {
-        string levelData = ExportData();
-        File.WriteAllText(@"F:\Temp\Game Data\Lunar Lander\Level.json", levelData);
+        string path = EditorUtility.SaveFilePanel("Save Level File", "", "level.json", "json");
+        if (path.Length != 0)
+        {
+            string levelData = ExportLevel();
+            File.WriteAllText(path, levelData);
+        }
     }
 
-    private string ExportData()
+    private static string ExportLevel()
     {
         Level level = new Level();
-        level.name = "Level XXX";
-        level.baseScore = 1000.0f;
+
+        // Get level data
+        GameObject levelIndicator = GameObject.Find("LevelIndicator");
+        TextMeshProUGUI levelIndicatorText = levelIndicator.gameObject.GetComponent<TextMeshProUGUI>();
+        level.name = levelIndicatorText.text;
+
+        GameObject levelInstructions = GameObject.Find("LevelInstructions");
+        TextMeshProUGUI levelInstructionsText = levelInstructions.gameObject.GetComponent<TextMeshProUGUI>();
+        level.instructions = levelInstructionsText.text;
+
+        GameObject scoreIndicator = GameObject.Find("ScoreIndicator");
+        TextMeshProUGUI scoreIndicatorText = scoreIndicator.gameObject.GetComponent<TextMeshProUGUI>();
+        level.baseScore = float.Parse(scoreIndicatorText.text);
 
         // Export rocket data
         GameObject rocket = GameObject.Find("Rocket");
@@ -35,7 +55,7 @@ public class LevelInfo : MonoBehaviour
         level.rocketRotationSpeed = rocketController.rotationSpeed;
         level.rocketPower = rocketController.rocketPower;
         level.rocketStartingFuel = rocketController.startingFuel;
-        level.rocketFuelRate= rocketController.fuelRate;
+        level.rocketFuelRate = rocketController.fuelRate;
         Rigidbody2D rigidbody2D = rocket.GetComponent<Rigidbody2D>();
         level.rocketMass = rigidbody2D.mass;
         level.rocketGravityScale = rigidbody2D.gravityScale;
@@ -44,7 +64,7 @@ public class LevelInfo : MonoBehaviour
         GameObject landingPads = GameObject.Find("Landing Pads");
         level.landingPads = new LandingPad[landingPads.transform.childCount];
         int landingPadIndex = 0;
-        foreach(Transform t in landingPads.transform)
+        foreach (Transform t in landingPads.transform)
         {
             GameObject child = t.gameObject;
             LandingPad landingPad = new LandingPad();
@@ -66,7 +86,7 @@ public class LevelInfo : MonoBehaviour
         GameObject padMultipliers = GameObject.Find("Pad Multipliers");
         level.padMultiplierLabels = new PadMultiplierLabel[padMultipliers.transform.childCount];
         int padMultiplierLabelIndex = 0;
-        foreach(Transform t in padMultipliers.transform)
+        foreach (Transform t in padMultipliers.transform)
         {
             TextMeshProUGUI child = t.gameObject.GetComponent<TextMeshProUGUI>();
             RectTransform rt = t.gameObject.GetComponent<RectTransform>();
@@ -82,7 +102,7 @@ public class LevelInfo : MonoBehaviour
         GameObject ground = GameObject.Find("Ground");
         SpriteShapeController ssc = ground.GetComponent<SpriteShapeController>();
         level.groundPoints = new GroundPoint[ssc.spline.GetPointCount()];
-        for(int groundPointIndex = 0; groundPointIndex < level.groundPoints.Length; groundPointIndex++)
+        for (int groundPointIndex = 0; groundPointIndex < level.groundPoints.Length; groundPointIndex++)
         {
             Vector3 pointPosition = ssc.spline.GetPosition(groundPointIndex);
             GroundPoint point = new GroundPoint();

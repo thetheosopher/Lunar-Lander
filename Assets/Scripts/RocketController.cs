@@ -26,7 +26,7 @@ public class RocketController : MonoBehaviour
     private bool collided = false;
     private AudioSource rocketSound;
     private Rigidbody2D rigidBody;
-    private Vector3 startingPosition;
+    public Vector3 startingPosition;
     private Quaternion startingRotation;
     private float altitude;
 
@@ -76,7 +76,8 @@ public class RocketController : MonoBehaviour
         if(!collided)
         {
             float horizontalInput = Input.GetAxis("Horizontal");
-            gameObject.transform.Rotate(Vector3.forward, rotationSpeed * Time.deltaTime * horizontalInput);
+            // gameObject.transform.Rotate(Vector3.forward, rotationSpeed * Time.deltaTime * horizontalInput);
+            rigidBody.AddTorque(rotationSpeed * horizontalInput);
         }
 
         if (Input.GetKey(KeyCode.Space) && currentFuel > 0 && !collided)

@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.U2D;
@@ -14,6 +15,21 @@ public class LevelLoader : MonoBehaviour
         Level level = JsonUtility.FromJson<Level>(bindata.text);
 
         SetLevelName(level.name);
+        SetLevelInstructions(level.instructions);
+        ConfigureRocket(level);
+        ConfigureGround(level.groundPoints);
+        CreateLandingPads(level.landingPads);
+        CreatePadMultiplierLabels(level.padMultiplierLabels);
+    }
+    public void LoadLevelData(string levelData)
+    {
+        // Load level from JSON
+        Level level = JsonUtility.FromJson<Level>(levelData);
+
+        SetLevelName(level.name);
+        SetLevelInstructions(level.instructions);
+        SetLevelBaseScore(level.baseScore);
+        ConfigureRocket(level);
         ConfigureGround(level.groundPoints);
         CreateLandingPads(level.landingPads);
         CreatePadMultiplierLabels(level.padMultiplierLabels);
@@ -26,11 +42,40 @@ public class LevelLoader : MonoBehaviour
         tmp.text = name;
     }
 
+    void SetLevelInstructions(string instructions)
+    {
+        GameObject gameObject = GameObject.Find("LevelInstructions");
+        if(gameObject != null)
+        {
+            if(!string.IsNullOrEmpty(instructions))
+            {
+                gameObject.SetActive(true);
+                TextMeshProUGUI tmp = gameObject.GetComponent<TextMeshProUGUI>();
+                tmp.text = instructions;
+            }
+            else
+            {
+                gameObject.SetActive(false);
+            }
+        }
+    }
+
+    void SetLevelBaseScore(float baseScore)
+    {
+        if(!Application.isPlaying)
+        {
+            GameObject gameObject = GameObject.Find("ScoreIndicator");
+            TextMeshProUGUI tmp = gameObject.GetComponent<TextMeshProUGUI>();
+            tmp.text = ((int)baseScore).ToString();
+        }
+    }
+
     void ConfigureRocket(Level level)
     {
         GameObject rocket = GameObject.Find("Rocket");
         RocketController rocketController = rocket.GetComponent<RocketController>();
         rocket.transform.position = new Vector3(level.rocketPositionX, level.rocketPositionY);
+        rocketController.startingPosition = rocket.transform.position;
         rocketController.rotationSpeed = level.rocketRotationSpeed;
         rocketController.rocketPower = level.rocketPower;
         rocketController.startingFuel = level.rocketStartingFuel;
@@ -44,7 +89,6 @@ public class LevelLoader : MonoBehaviour
     {
         GameObject ground = GameObject.Find("Ground");
         SpriteShapeController ssc = ground.GetComponent<SpriteShapeController>();
-
         ssc.spline.Clear();
         for (int i = 0; i < groundPoints.Length; i++)
         {
@@ -56,10 +100,7 @@ public class LevelLoader : MonoBehaviour
     void CreateLandingPads(LandingPad[] landingPads)
     {
         GameObject landingPadsParent = GameObject.Find("Landing Pads");
-        foreach (Transform child in landingPadsParent.transform)
-        {
-            GameObject.Destroy(child.gameObject);
-        }
+        DeleteChildren(landingPadsParent);
         for (int i = 0; i < landingPads.Length; i++)
         {
             LandingPad pad = landingPads[i];
@@ -80,11 +121,8 @@ public class LevelLoader : MonoBehaviour
     void CreatePadMultiplierLabels(PadMultiplierLabel[] padMultiplierLabels)
     {
         GameObject padMultipliersParent = GameObject.Find("Pad Multipliers");
-        foreach (Transform child in padMultipliersParent.transform)
-        {
-            GameObject.Destroy(child.gameObject);
-        }
-        for(int i = 0; i < padMultiplierLabels.Length; i++)
+        DeleteChildren(padMultipliersParent);
+        for (int i = 0; i < padMultiplierLabels.Length; i++)
         {
             PadMultiplierLabel padMultiplierLabel = padMultiplierLabels[i];
             GameObject padMultiplierObject = Instantiate<GameObject>(padMultiplierLabelPrefab);
@@ -95,6 +133,25 @@ public class LevelLoader : MonoBehaviour
             padMultiplierObject.name = padMultiplierLabel.name;
             tmp.text = padMultiplierLabel.text;
             rt.position = new Vector3(padMultiplierLabel.x, padMultiplierLabel.y);
+        }
+    }
+
+    void DeleteChildren(GameObject g)
+    {
+        if (g == null) return;
+        if (Application.isEditor)
+        {
+            for (var i = g.transform.childCount - 1; i >= 0; i--)
+            {
+                DestroyImmediate(g.transform.GetChild(i).gameObject);
+            }
+        }
+        else
+        {
+            for (var i = g.transform.childCount - 1; i >= 0; i--)
+            {
+                Destroy(g.transform.GetChild(i).gameObject);
+            }
         }
     }
 }

@@ -1,9 +1,10 @@
 {
 	"name": "Level 1",
+	"instructions": "Fire your engines to land gently on the pad",
 	"baseScore": 100.0,
 	"rocketPositionX": 0.0,
 	"rocketPositionY": 3.9998037815093996,
-	"rocketRotationSpeed": 15.0,
+	"rocketRotationSpeed": 50.0,
 	"rocketPower": 200000.0,
 	"rocketStartingFuel": 2000.0,
 	"rocketFuelRate": 50.0,

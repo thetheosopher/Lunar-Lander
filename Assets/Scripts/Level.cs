@@ -7,6 +7,7 @@ using UnityEngine;
 public class Level
 {
     public string name;
+    public string instructions;
     public float baseScore;
 
     public float rocketPositionX;

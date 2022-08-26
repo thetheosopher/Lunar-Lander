@@ -45,9 +45,10 @@ public class GameController : MonoBehaviour
     public LevelLoader levelLoader;
     public int startingLevel = 0;
     public int currentLevel = 0;
-    public int maxLevel = 2;
+    public int maxLevel = 3;
     public int lastScore = 0;
     public int totalScore = 0;
+    public bool designMode = false;
 
     private float zoomStartSize;
     private float zoomEndSize;
@@ -55,6 +56,7 @@ public class GameController : MonoBehaviour
     private float zoomStartY;
     private float zoomEndX;
     private float zoomEndY;
+    private float lastZoomTime;
     private bool zooming;
 
     public float zoomSteps = 60;
@@ -143,6 +145,7 @@ public class GameController : MonoBehaviour
         mainCamera.enabled = true;
         closeUpCamera.enabled = false;
         closeUpCameraActive = false;
+        lastZoomTime = Time.fixedTime;
         zooming = false;
     }
 
@@ -176,6 +179,7 @@ public class GameController : MonoBehaviour
         }
         closeUpCamera.orthographicSize = zoomEndSize;
         closeUpCamera.transform.position = new Vector3(zoomEndX, zoomEndY, -10);
+        lastZoomTime = Time.fixedTime;
         zooming = false;
     }
 
@@ -199,11 +203,11 @@ public class GameController : MonoBehaviour
         fuelGauge.SetValue(currentFuel);
         altitudeText.SetText($"{altitude:0}­ meters");
 
-        if(altitude < 200 && !closeUpCameraActive)
+        if(altitude < 200 && !closeUpCameraActive && !zooming && Time.fixedTime - lastZoomTime > 1)
         {
             ActivateCloseUpCamera();
         }
-        if(altitude > 400 && closeUpCameraActive)
+        if(altitude > 300 && closeUpCameraActive && !zooming && Time.fixedTime - lastZoomTime > 1)
         {
             ActivateMainCamera();
         }
@@ -238,8 +242,11 @@ public class GameController : MonoBehaviour
         successText.gameObject.SetActive(true);
         landingScoreText.gameObject.SetActive(true);
         landingStatsPanel.gameObject.SetActive(true);
-        totalScore += lastScore;
-        totalScoreText.text = $"{totalScore:#,###}";
+        if (!designMode)
+        {
+            totalScore += lastScore;
+            totalScoreText.text = $"{totalScore:#,###}";
+        }
         StartCoroutine(PlayAgainCoroutine(true));
     }
 
@@ -255,16 +262,23 @@ public class GameController : MonoBehaviour
     {
         yield return new WaitForSeconds(3);
         ActivateMainCamera();
-        if (success)
+        if (designMode)
         {
-            if(currentLevel < maxLevel)
-            {
-                continueButton.gameObject.SetActive(true);
-            }
+            playAgainButton.gameObject.SetActive(true);
         }
         else
         {
-            playAgainButton.gameObject.SetActive(true);
+            if (success)
+            {
+                if (currentLevel < maxLevel)
+                {
+                    continueButton.gameObject.SetActive(true);
+                }
+            }
+            else
+            {
+                playAgainButton.gameObject.SetActive(true);
+            }
         }
     }
 }

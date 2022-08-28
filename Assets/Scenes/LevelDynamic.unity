@@ -20673,7 +20673,7 @@ MonoBehaviour:
   levelLoader: {fileID: 129472499}
   startingLevel: 1
   currentLevel: 0
-  maxLevel: 5
+  maxLevel: 6
   lastScore: 0
   totalScore: 0
   designMode: 0

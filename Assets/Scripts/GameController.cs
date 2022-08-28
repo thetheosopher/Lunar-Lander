@@ -107,6 +107,8 @@ public class GameController : MonoBehaviour
         ActivateMainCamera();
         introCanvas.gameObject.SetActive(false);
         instrumentCanvas.gameObject.SetActive(true);
+        RocketController rc = rocket.GetComponent<RocketController>();
+        rc.Reset();
         Time.timeScale = 1;
     }
 

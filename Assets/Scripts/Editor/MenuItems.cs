@@ -112,7 +112,7 @@ public class MenuItems
             level.groundPoints[groundPointIndex] = point;
         }
 
-        string serialized = JsonUtility.ToJson(level);
+        string serialized = JsonUtility.ToJson(level, true);
         return serialized;
     }
 }

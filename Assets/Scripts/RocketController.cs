@@ -81,7 +81,9 @@ public class RocketController : MonoBehaviour
             rigidBody.AddTorque(rotationSpeed * horizontalInput);
         }
 
-        if (Input.GetKey(KeyCode.Space) && currentFuel > 0 && !collided)
+        // if (Input.GetKey(KeyCode.Space) && currentFuel > 0 && !collided)
+        if ((Input.GetButton("Jump") || Input.GetButton("Fire1")) 
+            && currentFuel > 0 && !collided)
         {
             if(!rocketOn)
             {

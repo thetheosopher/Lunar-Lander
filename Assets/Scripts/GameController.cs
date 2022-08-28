@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using UnityEngine.EventSystems;
 
 public struct LandingStats
 {
@@ -269,6 +270,7 @@ public class GameController : MonoBehaviour
         if (designMode)
         {
             playAgainButton.gameObject.SetActive(true);
+            EventSystem.current.SetSelectedGameObject(playAgainButton.gameObject);
         }
         else
         {
@@ -277,11 +279,13 @@ public class GameController : MonoBehaviour
                 if (currentLevel < maxLevel)
                 {
                     continueButton.gameObject.SetActive(true);
+                    EventSystem.current.SetSelectedGameObject(continueButton.gameObject);
                 }
             }
             else
             {
                 playAgainButton.gameObject.SetActive(true);
+                EventSystem.current.SetSelectedGameObject(playAgainButton.gameObject);
             }
         }
     }

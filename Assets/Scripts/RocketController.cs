@@ -76,7 +76,7 @@ public class RocketController : MonoBehaviour
     {
         if(!collided)
         {
-            float horizontalInput = Input.GetAxis("Horizontal");
+            float horizontalInput = -Input.GetAxis("Horizontal");
             // gameObject.transform.Rotate(Vector3.forward, rotationSpeed * Time.deltaTime * horizontalInput);
             rigidBody.AddTorque(rotationSpeed * horizontalInput);
         }
@@ -214,7 +214,7 @@ public class RocketController : MonoBehaviour
                 var go = collision.gameObject.transform.position;
 
                 var delta = point.point.x - go.x;
-                landingPadPosition = delta;
+                landingPadPosition = delta * gameController.distanceScalingFactor;
 
                 rigidBody.velocity = Vector2.zero;
                 gameObject.transform.rotation = Quaternion.identity;

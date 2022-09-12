@@ -37,12 +37,14 @@ public class RocketController : MonoBehaviour
     private float landingFuelRemaining;
     private float landingPadPosition;
     private float landingPadMultiplier;
+    private float rocketVolume;
 
     // Start is called before the first frame update
     void Start()
     {
         Time.timeScale = 0;
         rocketSound = GetComponent<AudioSource>();
+        rocketVolume = rocketSound.volume;
         rigidBody = GetComponent<Rigidbody2D>();
         gameController.fuelGauge.SetMaxValue(startingFuel);
         gameController.UpdateFuelGauge(startingFuel);
@@ -89,7 +91,11 @@ public class RocketController : MonoBehaviour
             {
                 rocketFlame.Play();
                 rocketOn = true;
-                rocketSound.Play();
+                rocketSound.volume = rocketVolume;
+                if (!rocketSound.isPlaying)
+                {
+                    rocketSound.Play();
+                }
             }
         }
         else
@@ -98,7 +104,8 @@ public class RocketController : MonoBehaviour
             {
                 rocketFlame.Stop();
                 rocketOn=false;
-                rocketSound.Stop();
+                rocketSound.volume = 0;
+                // rocketSound.Stop();
             }
         }
     }
@@ -170,6 +177,12 @@ public class RocketController : MonoBehaviour
             {
                 OnFailure("You crashed.");
             }
+        }
+        else if(collision.gameObject.CompareTag("Asteroid"))
+        {
+            gameObject.SetActive(false);
+            Explode();
+            OnFailure("You hit an asteroid");
         }
         else if(collision.gameObject.CompareTag("Boundary"))
         {

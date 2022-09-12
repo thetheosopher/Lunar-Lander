@@ -7,6 +7,7 @@ public class LevelLoader : MonoBehaviour
 {
     public GameObject landingPadPrefab;
     public GameObject padMultiplierLabelPrefab;
+    public GameObject obstaclePrefab;
 
     public void LoadLevel(int levelNumber)
     {
@@ -20,6 +21,7 @@ public class LevelLoader : MonoBehaviour
         ConfigureGround(level.groundPoints);
         CreateLandingPads(level.landingPads);
         CreatePadMultiplierLabels(level.padMultiplierLabels);
+        CreateObstacles(level.obstacles);
     }
     public void LoadLevelData(string levelData)
     {
@@ -33,6 +35,7 @@ public class LevelLoader : MonoBehaviour
         ConfigureGround(level.groundPoints);
         CreateLandingPads(level.landingPads);
         CreatePadMultiplierLabels(level.padMultiplierLabels);
+        CreateObstacles(level.obstacles);
 
         GameObject gameController = GameObject.Find("GameController");
         GameController controller = gameController.GetComponent<GameController>();
@@ -91,7 +94,7 @@ public class LevelLoader : MonoBehaviour
         rigidbody2D.gravityScale = level.rocketGravityScale;
     }
 
-    void ConfigureGround(GroundPoint[] groundPoints)
+    void ConfigureGround(PolygonPoint[] groundPoints)
     {
         GameObject ground = GameObject.Find("Ground");
         SpriteShapeController ssc = ground.GetComponent<SpriteShapeController>();
@@ -139,6 +142,35 @@ public class LevelLoader : MonoBehaviour
             padMultiplierObject.name = padMultiplierLabel.name;
             tmp.text = padMultiplierLabel.text;
             rt.position = new Vector3(padMultiplierLabel.x, padMultiplierLabel.y);
+        }
+    }
+
+    void CreateObstacles(Obstacle[] obstacles)
+    {
+        GameObject obstaclesParent = GameObject.Find("Obstacles");
+        DeleteChildren(obstaclesParent);
+        if(obstacles == null)
+        {
+            return;
+        }
+        for(int i = 0; i < obstacles.Length; i++)
+        {
+            Obstacle obstacle = obstacles[i];
+            GameObject obstacleObject = Instantiate<GameObject>(obstaclePrefab);
+            obstacleObject.name = obstacle.name;
+            obstacleObject.tag = obstacle.tag;
+            obstacleObject.transform.SetParent(obstaclesParent.transform);
+            obstacleObject.transform.position = new Vector3(obstacle.positionX, obstacle.positionY);
+            obstacleObject.transform.rotation = obstacle.rotation;
+            ObstacleData obstacleData = obstacleObject.GetComponent<ObstacleData>();
+            obstacleData.rotationRate = obstacle.rotationRate;
+            SpriteShapeController ossc = obstacleObject.GetComponent<SpriteShapeController>();
+            ossc.spline.Clear();
+            for (int p = 0; p < obstacle.points.Length; p++)
+            {
+                ossc.spline.InsertPointAt(p, new Vector3(obstacle.points[p].x, obstacle.points[p].y, 0));
+                ossc.spline.SetTangentMode(p, ShapeTangentMode.Linear);
+            }
         }
     }
 

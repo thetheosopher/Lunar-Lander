@@ -34,6 +34,19 @@ public class MenuItems
     {
         Level level = new Level();
 
+        ExportLevelData(level);
+        ExportRocketData(level);
+        ExportLandingPads(level);
+        ExportPadMultipliers(level);
+        ExportGroundPoints(level);
+        ExportObstacles(level);
+
+        string serialized = JsonUtility.ToJson(level, true);
+        return serialized;
+    }
+
+    private static void ExportLevelData(Level level)
+    {
         // Get level data
         GameObject levelIndicator = GameObject.Find("LevelIndicator");
         TextMeshProUGUI levelIndicatorText = levelIndicator.gameObject.GetComponent<TextMeshProUGUI>();
@@ -46,7 +59,10 @@ public class MenuItems
         GameObject scoreIndicator = GameObject.Find("ScoreIndicator");
         TextMeshProUGUI scoreIndicatorText = scoreIndicator.gameObject.GetComponent<TextMeshProUGUI>();
         level.baseScore = float.Parse(scoreIndicatorText.text);
+    }
 
+    private static void ExportRocketData(Level level)
+    {
         // Export rocket data
         GameObject rocket = GameObject.Find("Rocket");
         RocketController rocketController = rocket.GetComponent<RocketController>();
@@ -60,7 +76,10 @@ public class MenuItems
         Rigidbody2D rigidbody2D = rocket.GetComponent<Rigidbody2D>();
         level.rocketMass = rigidbody2D.mass;
         level.rocketGravityScale = rigidbody2D.gravityScale;
+    }
 
+    private static void ExportLandingPads(Level level)
+    {
         // Export landing pads
         GameObject landingPads = GameObject.Find("Landing Pads");
         level.landingPads = new LandingPad[landingPads.transform.childCount];
@@ -82,7 +101,10 @@ public class MenuItems
             landingPad.colliderSizeX = collider.size.x;
             level.landingPads[landingPadIndex++] = landingPad;
         }
+    }
 
+    private static void ExportPadMultipliers(Level level)
+    {
         // Export landing pad multiplier labels
         GameObject padMultipliers = GameObject.Find("Pad Multipliers");
         level.padMultiplierLabels = new PadMultiplierLabel[padMultipliers.transform.childCount];
@@ -98,21 +120,52 @@ public class MenuItems
             padMultiplierLabel.text = child.text;
             level.padMultiplierLabels[padMultiplierLabelIndex++] = padMultiplierLabel;
         }
+    }
 
+    private static void ExportGroundPoints(Level level)
+    {
         // Export ground points
         GameObject ground = GameObject.Find("Ground");
         SpriteShapeController ssc = ground.GetComponent<SpriteShapeController>();
-        level.groundPoints = new GroundPoint[ssc.spline.GetPointCount()];
+        level.groundPoints = new PolygonPoint[ssc.spline.GetPointCount()];
         for (int groundPointIndex = 0; groundPointIndex < level.groundPoints.Length; groundPointIndex++)
         {
             Vector3 pointPosition = ssc.spline.GetPosition(groundPointIndex);
-            GroundPoint point = new GroundPoint();
+            PolygonPoint point = new PolygonPoint();
             point.x = pointPosition.x;
             point.y = pointPosition.y;
             level.groundPoints[groundPointIndex] = point;
         }
+    }
 
-        string serialized = JsonUtility.ToJson(level, true);
-        return serialized;
+    private static void ExportObstacles(Level level)
+    {
+        // Export obstacles
+        GameObject obstacles = GameObject.Find("Obstacles");
+        level.obstacles = new Obstacle[obstacles.transform.childCount];
+        int obstacleIndex = 0;
+        foreach (Transform t in obstacles.transform)
+        {
+            Obstacle obstacle = new Obstacle();
+            GameObject obstacleObject = t.gameObject;
+            obstacle.name = obstacleObject.name;
+            obstacle.tag = obstacleObject.tag;
+            obstacle.positionX = obstacleObject.transform.position.x;
+            obstacle.positionY = obstacleObject.transform.position.y;
+            obstacle.rotation = obstacleObject.transform.rotation;
+            SpriteShapeController ossc = obstacleObject.GetComponent<SpriteShapeController>();
+            obstacle.points = new PolygonPoint[ossc.spline.GetPointCount()];
+            for (int polygonPointIndex = 0; polygonPointIndex < obstacle.points.Length; polygonPointIndex++)
+            {
+                Vector3 pointPosition = ossc.spline.GetPosition(polygonPointIndex);
+                PolygonPoint point = new PolygonPoint();
+                point.x = pointPosition.x;
+                point.y = pointPosition.y;
+                obstacle.points[polygonPointIndex] = point;
+            }
+            ObstacleData obstacleData = obstacleObject.GetComponent<ObstacleData>();
+            obstacle.rotationRate = obstacleData.rotationRate;
+            level.obstacles[obstacleIndex++] = obstacle;
+        }
     }
 }

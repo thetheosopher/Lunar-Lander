@@ -21,8 +21,9 @@ public class Level
     public SerializableQuaternion rocketRotation;
 
     public LandingPad[] landingPads;
-    public GroundPoint[] groundPoints;
+    public PolygonPoint[] groundPoints;
     public PadMultiplierLabel[] padMultiplierLabels;
+    public Obstacle[] obstacles;
 }
 
 [Serializable]
@@ -38,7 +39,7 @@ public class LandingPad
 }
 
 [Serializable]
-public class GroundPoint
+public class PolygonPoint
 {
     public float x;
     public float y;
@@ -51,4 +52,16 @@ public class PadMultiplierLabel
     public string text;
     public float x;
     public float y;
+}
+
+[Serializable]
+public class Obstacle
+{
+    public string name;
+    public string tag;
+    public float positionX;
+    public float positionY;
+    public SerializableQuaternion rotation;
+    public float rotationRate;
+    public PolygonPoint[] points;
 }

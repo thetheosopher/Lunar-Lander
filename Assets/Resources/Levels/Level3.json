@@ -1,7 +1,7 @@
 {
     "name": "Level 3",
     "instructions": "Land on higher value pads for extra points",
-    "baseScore": 1000.0,
+    "baseScore": 1500.0,
     "rocketPositionX": -1.25,
     "rocketPositionY": 3.4700000286102297,
     "rocketRotationSpeed": 250.0,
@@ -42,7 +42,7 @@
             "positionY": -3.0602219104766847,
             "scaleX": 0.9527999758720398,
             "scaleY": 0.10000000149011612,
-            "colliderSizeX": 1.0
+            "colliderSizeX": 0.699999988079071
         }
     ],
     "groundPoints": [
@@ -326,5 +326,6 @@
             "x": 6.440000057220459,
             "y": -3.359999895095825
         }
-    ]
+    ],
+    "obstacles": []
 }

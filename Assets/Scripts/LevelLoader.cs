@@ -9,7 +9,7 @@ public class LevelLoader : MonoBehaviour
     public GameObject padMultiplierLabelPrefab;
     public GameObject obstaclePrefab;
 
-    public void LoadLevel(int levelNumber)
+    public Level LoadLevel(int levelNumber)
     {
         // Load level from JSON
         TextAsset bindata = Resources.Load($"Levels/Level{levelNumber}") as TextAsset;
@@ -22,8 +22,9 @@ public class LevelLoader : MonoBehaviour
         CreateLandingPads(level.landingPads);
         CreatePadMultiplierLabels(level.padMultiplierLabels);
         CreateObstacles(level.obstacles);
+        return level;
     }
-    public void LoadLevelData(string levelData)
+    public Level LoadLevelData(string levelData)
     {
         // Load level from JSON
         Level level = JsonUtility.FromJson<Level>(levelData);
@@ -40,6 +41,8 @@ public class LevelLoader : MonoBehaviour
         GameObject gameController = GameObject.Find("GameController");
         GameController controller = gameController.GetComponent<GameController>();
         controller.ActivateMainCamera();
+
+        return level;
     }
 
     void SetLevelName(string name)

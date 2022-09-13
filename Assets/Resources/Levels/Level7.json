@@ -1,7 +1,7 @@
 {
     "name": "Level 7",
     "instructions": "Navigate to a cave landing pad",
-    "baseScore": 7500.0,
+    "baseScore": 3500.0,
     "rocketPositionX": 0.4099999964237213,
     "rocketPositionY": 3.4700000286102297,
     "rocketRotationSpeed": 250.0,
@@ -24,7 +24,7 @@
             "positionY": -3.0602219104766847,
             "scaleX": 0.9527999758720398,
             "scaleY": 0.10000000149011612,
-            "colliderSizeX": 0.8100000023841858
+            "colliderSizeX": 0.699999988079071
         },
         {
             "name": "Landing Pad 2",
@@ -33,7 +33,7 @@
             "positionY": -4.199999809265137,
             "scaleX": 0.9527999758720398,
             "scaleY": 0.10000000149011612,
-            "colliderSizeX": 0.8100000023841858
+            "colliderSizeX": 0.699999988079071
         }
     ],
     "groundPoints": [
@@ -663,5 +663,6 @@
             "x": -7.159999847412109,
             "y": -4.539999961853027
         }
-    ]
+    ],
+    "obstacles": []
 }

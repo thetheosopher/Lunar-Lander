@@ -44,6 +44,7 @@ public class GameController : MonoBehaviour
     public float distanceScalingFactor = 2.0f;
 
     public LevelLoader levelLoader;
+    public Level level;
     public int startingLevel = 0;
     public int currentLevel = 0;
     public int maxLevel = 3;
@@ -69,7 +70,7 @@ public class GameController : MonoBehaviour
     {
         if(startingLevel != 0)
         {
-            levelLoader.LoadLevel(startingLevel);
+            level = levelLoader.LoadLevel(startingLevel);
             currentLevel = startingLevel;
         }
     }
@@ -94,7 +95,7 @@ public class GameController : MonoBehaviour
         ActivateMainCamera();
         introCanvas.gameObject.SetActive(false);
         instrumentCanvas.gameObject.SetActive(true);
-        levelLoader.LoadLevel(startingLevel);
+        level = levelLoader.LoadLevel(startingLevel);
         totalScore = 0;
         totalScoreText.text = "0";
         RocketController rc = rocket.GetComponent<RocketController>();
@@ -115,7 +116,7 @@ public class GameController : MonoBehaviour
     public void LoadNextLevel()
     {
         currentLevel++;
-        levelLoader.LoadLevel(currentLevel);
+        level = levelLoader.LoadLevel(currentLevel);
         RocketController rc = rocket.GetComponent<RocketController>();
         rc.Reset();
     }
@@ -233,11 +234,11 @@ public class GameController : MonoBehaviour
 
     private float ComputeScore(LandingStats stats)
     {
-        float baseScore = 1000f;
-        float velocityBonus = 1000 - Mathf.Abs(stats.velocity/distanceScalingFactor) * 1000.0f;
-        float attitudeBonus = 1000 - Mathf.Abs(stats.attitude/distanceScalingFactor) * 1000.0f;
-        float fuelBonus = 1000 - stats.fuelRemaining * 1000.0f;
-        float padPositionBonus = 1000 - Mathf.Abs(stats.padPosition/distanceScalingFactor) * 1000f;
+        float baseScore = level.baseScore;
+        float velocityBonus = baseScore - Mathf.Abs(stats.velocity/distanceScalingFactor) * baseScore;
+        float attitudeBonus = baseScore - Mathf.Abs(stats.attitude/distanceScalingFactor) * baseScore;
+        float fuelBonus = baseScore - stats.fuelRemaining * baseScore;
+        float padPositionBonus = baseScore - Mathf.Abs(stats.padPosition/distanceScalingFactor) * baseScore;
         float score = baseScore + velocityBonus + attitudeBonus + fuelBonus + padPositionBonus;
         score *= stats.padMultiplier;
 

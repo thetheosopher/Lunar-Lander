@@ -1,7 +1,7 @@
 {
     "name": "Level 2",
     "instructions": "Steer your rocket to the center of the pad",
-    "baseScore": 250.0,
+    "baseScore": 1000.0,
     "rocketPositionX": -4.210000038146973,
     "rocketPositionY": 3.319999933242798,
     "rocketRotationSpeed": 250.0,
@@ -24,7 +24,7 @@
             "positionY": -1.9429999589920045,
             "scaleX": 3.049999952316284,
             "scaleY": 0.10000000149011612,
-            "colliderSizeX": 0.8999999761581421
+            "colliderSizeX": 0.800000011920929
         }
     ],
     "groundPoints": [
@@ -300,5 +300,6 @@
             "x": 5.480000019073486,
             "y": -2.3299999237060549
         }
-    ]
+    ],
+    "obstacles": []
 }

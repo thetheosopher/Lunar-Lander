@@ -1,7 +1,7 @@
 {
     "name": "Level 5",
     "instructions": "Correct rocket attitude and land safely",
-    "baseScore": 3000.0,
+    "baseScore": 2500.0,
     "rocketPositionX": -1.25,
     "rocketPositionY": 3.4700000286102297,
     "rocketRotationSpeed": 500.0,
@@ -42,7 +42,7 @@
             "positionY": -3.0602219104766847,
             "scaleX": 0.9527999758720398,
             "scaleY": 0.10000000149011612,
-            "colliderSizeX": 0.8100000023841858
+            "colliderSizeX": 0.699999988079071
         }
     ],
     "groundPoints": [
@@ -310,5 +310,6 @@
             "x": 6.440000057220459,
             "y": -3.359999895095825
         }
-    ]
+    ],
+    "obstacles": []
 }
